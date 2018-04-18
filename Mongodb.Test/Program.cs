@@ -21,17 +21,19 @@ namespace Mongodb.Test
 
         static void Main(string[] args)
         {
-            string serverHost = "mongodb://sure:HUANGsl@localhost/Sure_mongodbStudy";
-            string databaseName = "Sure_mongodbStudy";
-            string collectionName = "Sure_mongodbStudy";
+            string serverHost = "mongodb://sure:HUANGsl@localhost/MongodbStudy";
+            string databaseName = "MongodbStudy";
+            string collectionName = "MongodbStudy";
             DateTime bengin = DateTime.Now;
             Console.WriteLine("开始执行....");
+            List<Details> listDetails = new List<Details>();
             //for (int i = 1; i <= 10000000; i++)
             //{
-            //    Details detail = new Details() { name = $"黄森霖-{i}", age = i, sex = i % 2 == 0 ? "男" : "女" };
-            //    new MongodbHelper<Details>(serverHost, databaseName, collectionName).Insert(detail);
+            //    listDetails.Add(new Details() { name = $"黄森霖-{i}", age = i, sex = i % 2 == 0 ? "男" : "女" });
+            //    new MongodbHelper<Details>(serverHost, databaseName, collectionName).InsertBatch(listDetails);
             //}
-            List<Details> list = new MongodbHelper<Details>(serverHost, databaseName, collectionName).FindAll();
+                   
+            //List<Details> list = new MongodbHelper<Details>(serverHost, databaseName, collectionName).FindAll();
             DateTime end = DateTime.Now;
 
             Console.WriteLine("耗时：" + ExecDateDiff(bengin, end));
