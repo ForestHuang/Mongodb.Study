@@ -1,0 +1,36 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 14
+VisualStudioVersion = 14.0.23107.0
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{B988E0D4-1F97-45BB-815D-13E01ACE6E87}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mongodb.Common", "Mongodb.Common\Mongodb.Common.csproj", "{256061CF-052A-4708-925D-41D80644BCE2}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Test", "Test", "{F7988E8F-9433-413C-A7DD-844A1943DC75}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Mongodb.Test", "Mongodb.Test\Mongodb.Test.csproj", "{9654E8DB-A450-497B-B2C7-AE8649A4F4FE}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{256061CF-052A-4708-925D-41D80644BCE2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{256061CF-052A-4708-925D-41D80644BCE2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{256061CF-052A-4708-925D-41D80644BCE2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{256061CF-052A-4708-925D-41D80644BCE2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9654E8DB-A450-497B-B2C7-AE8649A4F4FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9654E8DB-A450-497B-B2C7-AE8649A4F4FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9654E8DB-A450-497B-B2C7-AE8649A4F4FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9654E8DB-A450-497B-B2C7-AE8649A4F4FE}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{256061CF-052A-4708-925D-41D80644BCE2} = {B988E0D4-1F97-45BB-815D-13E01ACE6E87}
+		{9654E8DB-A450-497B-B2C7-AE8649A4F4FE} = {F7988E8F-9433-413C-A7DD-844A1943DC75}
+	EndGlobalSection
+EndGlobal
