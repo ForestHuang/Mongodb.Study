@@ -1,11 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using MongoDB.Driver.Core;
 using System.Linq.Expressions;
 
 namespace Mongodb.Common
@@ -33,10 +30,14 @@ namespace Mongodb.Common
         /// create Mongodb
         /// </summary>
         /// <returns>MongoDatabase</returns>
-        private static IMongoDatabase GetMongodbDataBase() { return new MongoClient(serverHost).GetDatabase(databaseName); }
+        private static IMongoDatabase GetMongodbDataBase()
+        {
+            //return new MongoClient(serverHost).GetDatabase(new MongoUrl(serverHost).DatabaseName);
+            return new MongoClient(serverHost).GetDatabase(databaseName);
+        }
 
         /// <summary>
-        /// Insert （新增）
+        /// Insert （单条插入）
         /// </summary>
         /// <param name="entity">数据对象</param>
         public void Insert(T entity)
@@ -75,8 +76,9 @@ namespace Mongodb.Common
         /// <param name="pageIndex">当前页</param>
         /// <param name="pageSize">每页显示数</param>
         /// <param name="func">条件表达式</param>
+        /// <param name="orderby">排序表达式</param>
         /// <returns>泛型集合</returns>
-        public List<T> FindAll(out int pageCount, bool isPaging = false, int pageIndex = 1, int pageSize = 50, Func<T, bool> func = null)
+        public List<T> FindAll(out int pageCount, bool isPaging = false, int pageIndex = 1, int pageSize = 50, Func<T, bool> func = null, Func<T, bool> orderby = null)
         {
             try
             {
@@ -84,9 +86,9 @@ namespace Mongodb.Common
                 var listResut = collection.Find(new BsonDocument()).ToList<T>();
                 pageCount = listResut.Count;
                 if (isPaging)
-                    return listResut.Where(func).Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList<T>();
+                    return listResut.Where(func).OrderBy(orderby).Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList<T>();
                 else
-                    return listResut.Where(func).ToList<T>();
+                    return listResut.Where(func).OrderBy(orderby).ToList<T>();
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
@@ -101,28 +103,67 @@ namespace Mongodb.Common
             try
             {
                 var collection = GetMongodbDataBase().GetCollection<T>(collectionName);
-                return collection.Find(func).ToList<T>().FirstOrDefault();
+                return collection.Find(func).FirstOrDefault();
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
         /// <summary>
-        /// Delete （根据条件删除数据）
+        /// Delete （根据条件批量删除数据）
         /// </summary>
-        /// <param name="key">key</param>
-        /// <param name="value">value</param>
         /// <param name="filter">条件表达式</param>
-        public void Delete(string key, string value)
+        /// <returns>bool</returns>
+        public bool Delete(Expression<Func<T, bool>> func)
         {
             try
             {
-                var filter = Builders<T>.Filter.Eq(key, value);
+                bool result = false;
                 var collection = GetMongodbDataBase().GetCollection<T>(collectionName);
-                collection.DeleteOne(filter);
+                var delete = collection.DeleteMany(func);
+                result = delete != null && delete.DeletedCount > 0;
+                return result;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
 
+        /// <summary>
+        /// Update （根据条件替换整条数据）
+        /// </summary>
+        /// <param name="func">条件表达式</param>
+        /// <param name="update">修改数据集合</param>
+        /// <returns>bool</returns>
+        public bool UpdateReplace(Expression<Func<T, bool>> func, T entity)
+        {
+            try
+            {
+                bool result = false;
+                var collection = GetMongodbDataBase().GetCollection<T>(collectionName);
+                var update = collection.ReplaceOne(func, entity, new UpdateOptions() { IsUpsert = true });
+                result = update != null && update.ModifiedCount > 0;
+                return result;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
+
+        /// <summary>
+        /// Update （根据条件修改数据）
+        /// </summary>
+        /// <param name="func">条件表达式</param>
+        /// <param name="entity">修改对象</param>
+        /// <returns>bool</returns>
+        public bool Update(Expression<Func<T, bool>> func, T entity)
+        {
+            try
+            {
+                bool result = false;
+                BsonDocument bsonDocument = BsonExtensionMethods.ToBsonDocument(entity);
+                var collection = GetMongodbDataBase().GetCollection<T>(collectionName);
+                var update = collection.UpdateOne(func, bsonDocument, new UpdateOptions() { IsUpsert = true });
+                result = update != null && update.ModifiedCount > 0;
+                return result;
+            }
+            catch (Exception ex) { throw new Exception(ex.Message); }
+        }
     }
 }
 
