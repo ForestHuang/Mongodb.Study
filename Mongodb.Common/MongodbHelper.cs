@@ -7,6 +7,10 @@ using System.Linq.Expressions;
 
 namespace Mongodb.Common
 {
+    /// <summary>
+    /// Mongodb帮助类
+    /// </summary>
+    /// <typeparam name="T">泛型</typeparam>
     public class MongodbHelper<T> where T : class
     {
         private static string serverHost = string.Empty;
