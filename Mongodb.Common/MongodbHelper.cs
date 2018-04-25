@@ -82,17 +82,17 @@ namespace Mongodb.Common
         /// <param name="func">条件表达式</param>
         /// <param name="orderby">排序表达式</param>
         /// <returns>泛型集合</returns>
-        public List<T> FindAll(out int pageCount, bool isPaging = false, int pageIndex = 1, int pageSize = 50, Func<T, bool> func = null, Func<T, bool> orderby = null)
+        public IEnumerable<T> FindAll<TKey>(out int pageCount, Expression<Func<T, bool>> func, Func<T, TKey> orderby, bool isPaging = false, int pageIndex = 1, int pageSize = 50)
         {
             try
             {
                 var collection = GetMongodbDataBase().GetCollection<T>(collectionName);
-                var listResut = collection.Find(new BsonDocument()).ToList<T>();
-                pageCount = listResut.Count;
+                var listResut = collection.Find(func).ToEnumerable<T>().OrderBy(orderby);
+                pageCount = listResut.Count();
                 if (isPaging)
-                    return listResut.Where(func).OrderBy(orderby).Skip(pageSize * (pageIndex - 1)).Take(pageSize).ToList<T>();
+                    return listResut.Skip(pageSize * (pageIndex - 1)).Take(pageSize);
                 else
-                    return listResut.Where(func).OrderBy(orderby).ToList<T>();
+                    return listResut;
             }
             catch (Exception ex) { throw new Exception(ex.Message); }
         }
